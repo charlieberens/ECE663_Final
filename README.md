@@ -1,5 +1,5 @@
 ## Using this Repo
-This repo is designed to be used anywhere in the main directory of the Duke CS Login Server `login.cs.duke.edu`. All files you'll want to edit are contained within in. Everything too large to add to a get repo is simlink-ed to Russell's xtmp directory. In theory, if you clone this repo on `login.cs.duke.edu`, it should all work as if the large files are there with you.
+This repo is designed to be used anywhere in the main directory of the Duke CS Login Server `login.cs.duke.edu`. All files you'll want to edit are contained within in. Directories too large to add to a git repo are simlink-ed to Russell's xtmp directory. In theory, if you clone this repo on `login.cs.duke.edu`, it should all work as if the large files are there with you.
 
 Basic Setup (More Info Below)
 1. SSH into `login.cs.duke.edu`

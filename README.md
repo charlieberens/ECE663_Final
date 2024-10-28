@@ -1,5 +1,5 @@
 ## Using this Repo
-This repo is designed to be used anywhere in the main directory of the Duke CS Login Server `login.cs.duke.edu`. All files you'll want to edit are contained within in. Directories too large to add to a git repo are simlink-ed to Russell's xtmp directory. In theory, if you clone this repo on `login.cs.duke.edu`, it should all work as if the large files are there with you.
+This repo is designed to be used anywhere in the main directory of the Duke CS Login Server `login.cs.duke.edu`. All files you'll want to edit are contained within in. Directories too large to add to a git repo are symlinked to Russell's xtmp directory. In theory, if you clone this repo on `login.cs.duke.edu`, it should all work as if the large files are there with you.
 
 Basic Setup (More Info Below)
 1. SSH into `login.cs.duke.edu`
@@ -14,8 +14,8 @@ Basic Setup (More Info Below)
 * SSH into <net_id>@login.cs.duke.edu
 	- Copy over everything you need. I usually just use scp.
 	- Do not store large files on the login server! You have a small-ish limit, and if you have VS Code connected remotely it will make your life a living hell. (It has to index every file and will make everything really laggy).
-		+ Instead store everything somewhere in the "/usr/project/xtmp/<net_id>" folder. I usually make a simlink to make things easier, ex:  ` sl datasets /usr/project/xtmp/<NET_ID>/datasets`
-		+ The project is in my xtmp folder so if you want to manage our current directory make a simlink to my directory using `sl 663Proj ../../../usr/project/xtmp/rnb23/663Proj`
+		+ Instead store everything somewhere in the "/usr/project/xtmp/<net_id>" folder. I usually make a symlink to make things easier, ex:  ` sl datasets /usr/project/xtmp/<NET_ID>/datasets`
+		+ The project is in my xtmp folder so if you want to manage our current directory make a symlink to my directory using `sl 663Proj ../../../usr/project/xtmp/rnb23/663Proj`
 * Using Slurm
 	- There are two ways to do it
 		+ Interactively: Use this if you want to test the code (don't run code directly on the login server, run this command first)

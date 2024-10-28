@@ -1,3 +1,12 @@
+## Using this Repo
+This repo is designed to be used anywhere in the main directory of the Duke CS Login Server `login.cs.duke.edu`. All files you'll want to edit are contained within in. Everything too large to add to a get repo is simlink-ed to Russell's xtmp directory. In theory, if you clone this repo on `login.cs.duke.edu`, it should all work as if the large files are there with you.
+
+Basic Setup (More Info Below)
+1. SSH into `login.cs.duke.edu`
+2. Create some folders probably. Clone this repo.
+3. Code on `login.cs.duke.edu` using the VSCode SSH package (or Nano/Emacs/Vim if you're a menace).
+4. Run code using slurm.
+
 ## Geting Started
 * Video Link to Slurm guide: https://compsci.capture.duke.edu/Panopto/Pages/Viewer.aspx?id=a803886c-2117-4806-ae99-aaea00d749a7
 * Git Link to Slurm guide: https://gitlab.cs.duke.edu/wjs/cs-cluster-talk
@@ -142,4 +151,4 @@ These parameters are not changed through the command line you need to go into th
         ```bash
         tail -f logs/output_log_name_jobid#.out
         ```
-     - This command displays log output in real-time, as if you were running the script locally.
+     - This command displays log output in real-time, as if you were running the script locally. 

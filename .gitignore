@@ -1,0 +1,125 @@
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source files
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
+# OS-generated files #
+######################
+.DS_Store
+.DS_Store?
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE and editor files #
+########################
+*.swp
+*~
+.project
+.idea/
+*.sublime-workspace
+*.sublime-project
+.vscode/
+
+# Python #
+##########
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+VENV/
+.pytest_cache/
+.pyre/
+
+# Jupyter Notebook #
+####################
+.ipynb_checkpoints/
+
+# Node.js #
+###########
+node_modules/
+npm-debug.log
+yarn-error.log
+.pnpm-debug.log
+
+# Java #
+########
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+
+# Ruby #
+########
+*.gem
+*.rbc
+.rvm/
+.rbenv/
+.bundle/
+log/
+tmp/
+tags
+
+# C/C++ #
+#########
+*.obj
+*.elf
+*.out
+
+# Go #
+######
+bin/
+*.exe
+
+# Rust #
+########
+target/
+
+# JavaScript #
+##############
+*.js.map
+
+# General #
+###########
+*.bak
+*.tmp
+*.swp
+*.swo
+
+
+# Directories #
+###############
+ArtiFact/*
+DataSets/*
+logs/*
+
+# Files #
+#########

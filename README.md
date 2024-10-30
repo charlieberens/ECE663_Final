@@ -164,3 +164,7 @@ These parameters are not changed through the command line you need to go into th
         tail -n +1 -f logs/output_log_name_jobid#.out
         ```
      - This command displays log output in real-time, as if you were running the script locally. 
+  
+## XTMP Folder Ownership
+**<span style="color: red; font-weight: bold; font-size: 30px;">If you run or use any scripts or train, after you are done you need to run the `ownership_change.sh` script to make your work writeable and executable by the rest of the group.</span>**
+Note: If there is an active training run wait until its done before running the script

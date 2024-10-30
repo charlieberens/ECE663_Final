@@ -1,0 +1,35 @@
+.
+..
+assets
+data
+docs
+environment.yaml
+.gitignore
+gradio_canny2image.py
+gradio_sketch2image.py
+LICENSE
+logs
+output
+outputs
+README.md
+requirements.txt
+scripts
+src
+style.css
+TrainCat2Kat10000.sh
+wandb
+no change     /home/users/rnb23/xtmp/miniconda3/condabin/conda
+no change     /home/users/rnb23/xtmp/miniconda3/bin/conda
+no change     /home/users/rnb23/xtmp/miniconda3/bin/conda-env
+no change     /home/users/rnb23/xtmp/miniconda3/bin/activate
+no change     /home/users/rnb23/xtmp/miniconda3/bin/deactivate
+no change     /home/users/rnb23/xtmp/miniconda3/etc/profile.d/conda.sh
+no change     /home/users/rnb23/xtmp/miniconda3/etc/fish/conf.d/conda.fish
+no change     /home/users/rnb23/xtmp/miniconda3/shell/condabin/Conda.psm1
+no change     /home/users/rnb23/xtmp/miniconda3/shell/condabin/conda-hook.ps1
+no change     /home/users/rnb23/xtmp/miniconda3/lib/python3.12/site-packages/xontrib/conda.xsh
+no change     /home/users/rnb23/xtmp/miniconda3/etc/profile.d/conda.csh
+no change     /home/users/rnb23/.bashrc
+No action taken.
+/var/lib/slurm/slurmd/job5372316/slurm_script: line 16: cd: img2img-turbo: No such file or directory
+slurmstepd: error: *** JOB 5372316 ON compsci-cluster-fitz-05 CANCELLED AT 2024-10-29T19:15:29 ***

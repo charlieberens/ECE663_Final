@@ -46,7 +46,7 @@ def load_metadata(base_path, saved_metadata_path=None):
         print(f"Columns in metadata: {combined_metadata.columns.tolist()}")
         return combined_metadata
     else:
-        print("No metadata files found or files are empty. Please check the base path.")
+        print(f"No metadata files found in {base_path} or files are empty. Please check the base path.")
         return pd.DataFrame()
 
 def list_available_parameters(df):
@@ -236,23 +236,23 @@ def copy_images(df, output_dir):
             f.write('\n'.join(errors))
 
 # Parameters
-base_path = '../ArtiFact'  # The base directory where the original dataset is located
-output_directory = '../cats_fake'  # The directory where the new, filtered dataset should be saved
-saved_metadata_path = '../ArtiFact/SavedMetaData.pkl'  # Path to a saved metadata file for faster loading. If it doesn't exist, the script will reindex the metadata, which can be time-consuming.
-include_params = {'category': ['cat'], 'target': [1, 2, 3, 4, 5, 6]}  # Specifies which categories, targets, and/or models to include in the new dataset.
-exclude_params = {'model': ['pro_gan']}  # Specifies which categories, targets, and/or models to exclude from the new dataset.
-num_images = 10000  # The total number of images to select for the new dataset.
-sampling_method = 'distribution'  # Specifies how to sample the images. Options are 'random' or 'distribution'. 'distribution' will aim for an even distribution across the specified parameters in distribution_params.
-distribution_params = ['model']  # Defines the parameters to distribute the sampling across.
-
 # base_path = '../ArtiFact'  # The base directory where the original dataset is located
-# output_directory = '../cats_real'  # The directory where the new, filtered dataset should be saved
+# output_directory = '../DataSets/cats_fake10000'  # The directory where the new, filtered dataset should be saved
 # saved_metadata_path = '../ArtiFact/SavedMetaData.pkl'  # Path to a saved metadata file for faster loading. If it doesn't exist, the script will reindex the metadata, which can be time-consuming.
-# include_params = {'category': ['cat', 'n02123045', 'n02123159', 'n02123394', 'n02123597', 'n02124075'], 'target': [0]}  # Specifies which categories, targets, and/or models to include in the new dataset.
-# exclude_params = {}  # Specifies which categories, targets, and/or models to exclude from the new dataset.
+# include_params = {'category': ['cat'], 'target': [1, 2, 3, 4, 5, 6]}  # Specifies which categories, targets, and/or models to include in the new dataset.
+# exclude_params = {'model': ['pro_gan']}  # Specifies which categories, targets, and/or models to exclude from the new dataset.
 # num_images = 10000  # The total number of images to select for the new dataset.
 # sampling_method = 'distribution'  # Specifies how to sample the images. Options are 'random' or 'distribution'. 'distribution' will aim for an even distribution across the specified parameters in distribution_params.
 # distribution_params = ['model']  # Defines the parameters to distribute the sampling across.
+
+base_path = '../ArtiFact'  # The base directory where the original dataset is located
+output_directory = '../DataSets/cats_real10000'  # The directory where the new, filtered dataset should be saved
+saved_metadata_path = '../ArtiFact/SavedMetaData.pkl'  # Path to a saved metadata file for faster loading. If it doesn't exist, the script will reindex the metadata, which can be time-consuming.
+include_params = {'category': ['cat', 'n02123045', 'n02123159', 'n02123394', 'n02123597', 'n02124075'], 'target': [0]}  # Specifies which categories, targets, and/or models to include in the new dataset.
+exclude_params = {}  # Specifies which categories, targets, and/or models to exclude from the new dataset.
+num_images = 10000  # The total number of images to select for the new dataset.
+sampling_method = 'distribution'  # Specifies how to sample the images. Options are 'random' or 'distribution'. 'distribution' will aim for an even distribution across the specified parameters in distribution_params.
+distribution_params = ['model']  # Defines the parameters to distribute the sampling across.
 
 # Execution
 metadata_df = load_metadata(base_path, saved_metadata_path=saved_metadata_path)

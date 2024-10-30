@@ -65,13 +65,13 @@ I have written a script to pull whatever images you want from the artifact datas
 
 ```python
 base_path = '../ArtiFact'  # The base directory where the original dataset is located
-output_directory = '../cats_fake'  # The directory where the new, filtered dataset should be saved
+output_directory = '../DataSets/cats_fake10000'  # The directory where the new, filtered dataset should be saved
 saved_metadata_path = '../ArtiFact/SavedMetaData.pkl'  # Path to a saved metadata file for faster loading. If it doesn't exist, the script will reindex the metadata, which can be time-consuming.
-include_params = {'category': ['cat'], 'target': [1, 2, 3, 4, 5, 6]}  # Specifies which categories, targets, and/or models to include in the new dataset. In this example, only images of 'cat' with target values 1 to 6 (ai generated range) will be included.
-exclude_params = {'model': ['pro_gan']}  # Specifies which categories, targets, and/or models to exclude from the new dataset. In this example, images from the 'pro_gan' model will be excluded.
+include_params = {'category': ['cat'], 'target': [1, 2, 3, 4, 5, 6]}  # Specifies which categories, targets, and/or models to include in the new dataset.
+exclude_params = {'model': ['pro_gan']}  # Specifies which categories, targets, and/or models to exclude from the new dataset.
 num_images = 10000  # The total number of images to select for the new dataset.
 sampling_method = 'distribution'  # Specifies how to sample the images. Options are 'random' or 'distribution'. 'distribution' will aim for an even distribution across the specified parameters in distribution_params.
-distribution_params = ['model']  # Defines the parameters to distribute the sampling across. For example, specifying 'model' will ensure an even distribution of images from different models.
+distribution_params = ['model']  # Defines the parameters to distribute the sampling across.
 ```
 These parameters are not changed through the command line you need to go into the script and change them yourself.
 
@@ -79,11 +79,22 @@ These parameters are not changed through the command line you need to go into th
   * Once you have your new dataset made you need to split it into training and test sets using the split_val_set.py script.
     * Here are the parameters they should be pretty self explanatory.
       ```python
-      parser.add_argument("directory", type=str, help="The path to the directory containing the train set of images.")
-      parser.add_argument("val_spec", type=float, help="The proportion or number of images to move to the validation set (0 < val_spec <= 1 for proportion, val_spec >= 1 for specific number).")
+      parser = argparse.ArgumentParser(description="Split a directory of images into a train and validation set with optional postfix.")
+      parser.add_argument("input_directory", type=str, help="The path to the input directory containing the set of images.")
+      parser.add_argument("output_directory", type=str, help="The path to the output directory where the new structure will be created.")
+      parser.add_argument("val_spec", type=float, help="The proportion or number of images to copy to the validation set (0 < val_spec <= 1 for proportion, val_spec >= 1 for specific number).")
+      parser.add_argument("--postfix", type=str, default="", help="Optional postfix to add to the train and test directories.")
       ```
       These parameters are set through the command line.
+      You must run it on both your fake and real dataset to split both.
+      The post fix should be set to '_A' for the real dataset and '_B' for the fake dataset
+    * Example usage
+      ```bash
+      python split_val_set.py ../DataSets/cats_real10000/ ../DataSets/cat2kat10000 2000 --postfix _A
+      python split_val_set.py ../DataSets/cats_fake10000/ ../DataSets/cat2kat10000 2000 --postfix _B
+      ```
   * Once you have your data split into a test and training set you need to add fixed prompts for each spaces. These are prompts for the a and b space (real and fake space) of the model to reference and associate with the images. Do this by adding a fixed_prompt_a.txt and a fixed_prompt_b.txt file to the dataset directory. To get a full picture of what the cyclegan dataset should look like read [this](img2img-turbo/docs/training_cyclegan_turbo.md) portion of the img2img-turbo readme.
+  * Move the new dataset into the data folder in img2img-turbo
 
 ## How to Train CycleGAN-Turbo
 
@@ -140,8 +151,9 @@ These parameters are not changed through the command line you need to go into th
 3. **Start Training**
    - After making the necessary modifications, save the updated script and run it with SLURM:
      ```bash
-     sbatch script.sh
+     sbatch SlurmScritps/script.sh
      ```
+   - Make sure you are running from the repository home directory.
    - This command will start the training process.
 
 4. **Monitor Training Output**
@@ -149,6 +161,6 @@ These parameters are not changed through the command line you need to go into th
      1. **WandB** (for a more comprehensive view)
      2. **Tail Command** (to display live output in the terminal):
         ```bash
-        tail -f logs/output_log_name_jobid#.out
+        tail -n +1 -f logs/output_log_name_jobid#.out
         ```
      - This command displays log output in real-time, as if you were running the script locally. 

@@ -27,4 +27,4 @@ accelerate launch --main_process_port 29501 src/train_cyclegan_turbo.py \
     --report_to "wandb" --tracker_project_name "TrainLargeDiscL2" \
     --enable_xformers_memory_efficient_attention --validation_steps 1000 \
     --lambda_gan 0.5 --lambda_idt 1 --lambda_cycle 1 \
-    --lambda_additional_disc 1.0 --lambda_l2 1.0 --additional_disc_weights /home/users/cjb131/school/ECE560/CNNDetection/weights/blur_jpg_prob0.5.pth
+    --lambda_additional_disc 1.0 --lambda_l2 1.0 --additional_disc_weights /usr/xtmp/cjb131/663Proj/blur_jpg_prob0.5.pth

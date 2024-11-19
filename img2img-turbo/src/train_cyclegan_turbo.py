@@ -20,6 +20,27 @@ from model import make_1step_sched
 from cyclegan_turbo import CycleGAN_Turbo, VAE_encode, VAE_decode, initialize_unet, initialize_vae
 from my_utils.training_utils import UnpairedDataset, build_transform, parse_args_unpaired_training
 from my_utils.dino_struct import DinoStructureLoss
+from adversarial_example_tests.resnet import resnet50
+
+class AdditionalDiscriminatorLossManager():
+    def __init__(self, model_weights):
+        self.model = resnet50(num_classes=1)
+        state_dict = torch.load(model_weights, map_location='cpu')
+        self.model.load_state_dict(state_dict['model'])
+        self.model.cuda()
+        self.model.eval()
+
+        self.norm = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    
+    def __call__(self, img_a, img_b):
+        # Rectify transforms
+        pred_a = self.model(self.norm(img_a)).sigmoid().flatten()
+        pred_b = self.model(self.norm(img_b)).sigmoid().flatten()
+        # TODO - Ensure that this is the correct direction
+        loss = torch.nn.functional.binary_cross_entropy_with_logits(pred_a, torch.ones_like(pred_a)) + \
+            torch.nn.functional.binary_cross_entropy_with_logits(pred_b, torch.zeros_like(pred_b))
+        return loss
+
 
 
 def main(args):
@@ -162,6 +183,9 @@ def main(args):
         if "attn" in name:
             module.fused_attn = False
 
+    if args.lambda_additional_disc > 0:
+        additional_disc_manager = AdditionalDiscriminatorLossManager(args.additional_disc_weights)
+
     for epoch in range(first_epoch, args.max_train_epochs):
         for step, batch in enumerate(train_dataloader):
             l_acc = [unet, net_disc_a, net_disc_b, vae_enc, vae_dec]
@@ -187,7 +211,14 @@ def main(args):
                 cyc_rec_b = CycleGAN_Turbo.forward_with_networks(cyc_fake_a, "a2b", vae_enc, unet, vae_dec, noise_scheduler_1step, timesteps, fixed_a2b_emb)
                 loss_cycle_b = crit_cycle(cyc_rec_b, img_b) * args.lambda_cycle
                 loss_cycle_b += net_lpips(cyc_rec_b, img_b).mean() * args.lambda_cycle_lpips
-                accelerator.backward(loss_cycle_a + loss_cycle_b, retain_graph=False)
+
+                """
+                L2 Loss - We do this here to avoid an extra forward pass
+                """
+                loss_l2 = torch.nn.functional.mse_loss(cyc_fake_b, img_a) * args.lambda_l2
+                loss_l2 += torch.nn.functional.mse_loss(cyc_fake_a, img_b) * args.lambda_l2
+
+                accelerator.backward(loss_cycle_a + loss_cycle_b + loss_l2, retain_graph=False)
                 if accelerator.sync_gradients:
                     accelerator.clip_grad_norm_(params_gen, args.max_grad_norm)
     
@@ -255,6 +286,22 @@ def main(args):
                 lr_scheduler_disc.step()
                 optimizer_disc.zero_grad()
 
+                """
+                Additional Discriminator
+                """
+                if args.lambda_additional_disc > 0:
+                    fake_a = CycleGAN_Turbo.forward_with_networks(img_b, "b2a", vae_enc, unet, vae_dec, noise_scheduler_1step, timesteps, fixed_b2a_emb)
+                    fake_b = CycleGAN_Turbo.forward_with_networks(img_a, "a2b", vae_enc, unet, vae_dec, noise_scheduler_1step, timesteps, fixed_a2b_emb)
+                    
+                    loss_additional_disc = additional_disc_manager(fake_a, fake_b).mean() * args.lambda_additional_disc
+                    accelerator.backward(loss_additional_disc, retain_graph=False)
+                    if accelerator.sync_gradients:
+                        params_to_clip = list(net_disc_a.parameters()) + list(net_disc_b.parameters())
+                        accelerator.clip_grad_norm_(params_to_clip, args.max_grad_norm)
+                    optimizer_disc.step()
+                    lr_scheduler_disc.step()
+                    optimizer_disc.zero_grad()
+
             logs = {}
             logs["cycle_a"] = loss_cycle_a.detach().item()
             logs["cycle_b"] = loss_cycle_b.detach().item()
@@ -264,6 +311,10 @@ def main(args):
             logs["disc_b"] = loss_D_B_fake.detach().item() + loss_D_B_real.detach().item()
             logs["idt_a"] = loss_idt_a.detach().item()
             logs["idt_b"] = loss_idt_b.detach().item()
+            logs["l2"] = loss_l2.detach().item()
+
+            if args.lambda_additional_disc > 0:
+                logs["additional_disc"] = loss_additional_disc.detach().item()
 
             if accelerator.sync_gradients:
                 progress_bar.update(1)

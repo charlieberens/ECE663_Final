@@ -177,6 +177,10 @@ def parse_args_unpaired_training():
         help="Whether or not to use gradient checkpointing to save memory at the expense of slower backward pass.")
     parser.add_argument("--enable_xformers_memory_efficient_attention", action="store_true", help="Whether or not to use xformers.")
 
+    parser.add_argument("--lambda_l2", default=0.0, type=float)
+    parser.add_argument("--lambda_additional_disc", default=1.0, type=float)    
+    parser.add_argument("--additional_disc_weights", type=str, default=None)
+
     args = parser.parse_args()
     return args
 

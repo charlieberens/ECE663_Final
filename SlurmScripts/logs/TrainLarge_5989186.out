@@ -1,0 +1,25 @@
+.
+..
+logs
+TrainCat2Kat10000.sh
+TrainLargeDiscL2.sh
+TrainLargeDisc.sh
+TrainLargel2.sh
+TrainLargeOnlyDiscL2.sh
+TrainLargeOnlyDisc.sh
+TrainLarge.sh
+/var/lib/slurm/slurmd/job5989186/slurm_script: line 13: conda: command not found
+/var/lib/slurm/slurmd/job5989186/slurm_script: line 14: conda: command not found
+/var/lib/slurm/slurmd/job5989186/slurm_script: line 16: conda: command not found
+/var/lib/slurm/slurmd/job5989186/slurm_script: line 17: cd: img2img-turbo: No such file or directory
+/home/users/cjb131/miniconda3/envs/663FinalA/bin/python: can't open file '/home/users/cjb131/school/ECE560/final2/ECE663_Final/SlurmScripts/src/train_cyclegan_turbo.py': [Errno 2] No such file or directory
+Traceback (most recent call last):
+  File "/home/users/cjb131/miniconda3/envs/663FinalA/bin/accelerate", line 8, in <module>
+    sys.exit(main())
+  File "/home/users/cjb131/miniconda3/envs/663FinalA/lib/python3.10/site-packages/accelerate/commands/accelerate_cli.py", line 48, in main
+    args.func(args)
+  File "/home/users/cjb131/miniconda3/envs/663FinalA/lib/python3.10/site-packages/accelerate/commands/launch.py", line 1168, in launch_command
+    simple_launcher(args)
+  File "/home/users/cjb131/miniconda3/envs/663FinalA/lib/python3.10/site-packages/accelerate/commands/launch.py", line 763, in simple_launcher
+    raise subprocess.CalledProcessError(returncode=process.returncode, cmd=cmd)
+subprocess.CalledProcessError: Command '['/home/users/cjb131/miniconda3/envs/663FinalA/bin/python', 'src/train_cyclegan_turbo.py', '--pretrained_model_name_or_path=stabilityai/sd-turbo', '--output_dir=output2/cyclegan_turbo/TrainLarge', '--dataset_folder', 'data2/cyclegan', '--train_img_prep', 'no_resize', '--val_img_prep', 'no_resize', '--learning_rate=1e-5', '--max_train_steps=25000', '--train_batch_size=2', '--gradient_accumulation_steps=2', '--report_to', 'wandb', '--tracker_project_name', 'TrainLarge', '--enable_xformers_memory_efficient_attention', '--validation_steps', '1000', '--lambda_gan', '0.5', '--lambda_idt', '1', '--lambda_cycle', '1', '--lambda_additional_disc', '0.0', '--lambda_l2', '0.0']' returned non-zero exit status 2.

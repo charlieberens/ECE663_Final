@@ -164,7 +164,12 @@ def main(args):
     fixed_b2a_emb_base = text_encoder(fixed_b2a_tokens.cuda().unsqueeze(0))[0].detach()
     del text_encoder, tokenizer  # free up some memory
 
-    unet, vae_enc, vae_dec, net_disc_a, net_disc_b = accelerator.prepare(unet, vae_enc, vae_dec, net_disc_a, net_disc_b)
+    if args.lambda_additional_disc > 0:
+        additional_disc_manager = AdditionalDiscriminatorLossManager(args.additional_disc_weights)
+        unet, vae_enc, vae_dec, net_disc_a, net_disc_b, additional_discriminator = accelerator.prepare(unet, vae_enc, vae_dec, net_disc_a, net_disc_b, additional_disc_manager.model)
+        additional_disc_manager.model = additional_discriminator
+    else:
+        unet, vae_enc, vae_dec, net_disc_a, net_disc_b = accelerator.prepare(unet, vae_enc, vae_dec, net_disc_a, net_disc_b)
     net_lpips, optimizer_gen, optimizer_disc, train_dataloader, lr_scheduler_gen, lr_scheduler_disc = accelerator.prepare(
         net_lpips, optimizer_gen, optimizer_disc, train_dataloader, lr_scheduler_gen, lr_scheduler_disc
     )
@@ -182,9 +187,6 @@ def main(args):
     for name, module in net_disc_b.named_modules():
         if "attn" in name:
             module.fused_attn = False
-
-    if args.lambda_additional_disc > 0:
-        additional_disc_manager = AdditionalDiscriminatorLossManager(args.additional_disc_weights)
 
     for epoch in range(first_epoch, args.max_train_epochs):
         for step, batch in enumerate(train_dataloader):
@@ -290,17 +292,17 @@ def main(args):
                 Additional Discriminator
                 """
                 if args.lambda_additional_disc > 0:
+                    
                     fake_a = CycleGAN_Turbo.forward_with_networks(img_b, "b2a", vae_enc, unet, vae_dec, noise_scheduler_1step, timesteps, fixed_b2a_emb)
                     fake_b = CycleGAN_Turbo.forward_with_networks(img_a, "a2b", vae_enc, unet, vae_dec, noise_scheduler_1step, timesteps, fixed_a2b_emb)
                     
                     loss_additional_disc = additional_disc_manager(fake_a, fake_b).mean() * args.lambda_additional_disc
                     accelerator.backward(loss_additional_disc, retain_graph=False)
                     if accelerator.sync_gradients:
-                        params_to_clip = list(net_disc_a.parameters()) + list(net_disc_b.parameters())
-                        accelerator.clip_grad_norm_(params_to_clip, args.max_grad_norm)
-                    optimizer_disc.step()
-                    lr_scheduler_disc.step()
-                    optimizer_disc.zero_grad()
+                        accelerator.clip_grad_norm_(params_gen, args.max_grad_norm)
+                    optimizer_gen.step()
+                    lr_scheduler_gen.step()
+                    optimizer_gen.zero_grad()
 
             logs = {}
             logs["cycle_a"] = loss_cycle_a.detach().item()
